@@ -24,7 +24,13 @@ app.post("/relay", async (c) => {
             `From: ${from.first_name} ${from.last_name || ""}\n` +
             `Text: ${text}\n` +
             `Has Photos: ${hasPhotos}\n` +
-            `Has Video: ${hasVideo}`,
+            `Has Video: ${hasVideo}\n` +
+            `Photos: ${
+                hasPhotos
+                    ? update.message.photo.map((p: any) => p.file_id).join(", ")
+                    : "None"
+            }\n` +
+            `Video: ${hasVideo ? update.message.video.file_id : "None"}`,
     };
     const url = `https://api.telegram.org/bot${c.env.TG_BOT_TOKEN}/sendMessage`;
     const fetchOptions = {
