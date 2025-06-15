@@ -9,6 +9,8 @@ type Bindings = {
 
 const app = new Hono<{ Bindings: Bindings }>();
 
+const PAGE_ID = "491993130654751";
+
 app.get("/", (c) => {
     return c.text("Hello Hono!");
 });
@@ -74,7 +76,7 @@ app.post("/relay", async (c) => {
 
         // @ts-expect-error Hono's fetch is not typed
         const fbResponse = await fetch(
-            `https://graph.facebook.com/${"61567144269341"}/feed`,
+            `https://graph.facebook.com/${PAGE_ID}/feed`,
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
