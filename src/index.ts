@@ -4,6 +4,7 @@ import { GoogleGenAI } from "@google/genai";
 type Bindings = {
     TG_BOT_TOKEN: string;
     GEMINI_API_KEY: string;
+    FACEBOOK_PAGE_ACCESS_TOKEN: string;
 };
 
 const app = new Hono<{ Bindings: Bindings }>();
@@ -51,6 +52,7 @@ app.post("/relay", async (c) => {
         const response = {
             chat_id: update.message.chat.id,
             text:
+                `Sender ID: ${from.id}\n` +
                 `From: ${from.first_name} ${from.last_name || ""}\n` +
                 `Message: ${translatedText}\n`,
         };
@@ -69,6 +71,19 @@ app.post("/relay", async (c) => {
         }
 
         const result = await fetchResponse.json();
+
+        // @ts-expect-error Hono's fetch is not typed
+        const fbResponse = await fetch(
+            `https://graph.facebook.com/${"61567144269341"}/feed`,
+            {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    message: translatedText,
+                    access_token: c.env.FACEBOOK_PAGE_ACCESS_TOKEN,
+                }),
+            }
+        );
 
         // Return a success response
         if (!result.ok) {
