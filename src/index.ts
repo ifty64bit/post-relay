@@ -45,7 +45,7 @@ app.post("/relay", async (c) => {
         ${text}`,
         });
 
-        const translatedText = getGeminiResponse.candidates?.[0].content;
+        const translatedText = getGeminiResponse.text;
 
         //echo the message back
         const response = {
