@@ -28,6 +28,7 @@ app.post("/relay", async (c) => {
         const hasVideo = update.message.video !== undefined;
 
         if (!from || !text) {
+            console.error("Invalid message format:", update);
             return c.text("Invalid message format", 400);
         }
 
@@ -96,7 +97,6 @@ app.post("/relay", async (c) => {
 
         return c.text("OK");
     } catch (error) {
-
         console.error("Error processing message:", error);
 
         return c.text("Internal Server Error", 500);
