@@ -56,7 +56,7 @@ app.post("/relay", async (c) => {
     } catch (error) {
         console.error("Error processing message:", error);
 
-        return c.text("Internal Server Error", 500);
+        return c.text("Internal Server Error", 200);
     }
 });
 

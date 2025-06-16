@@ -75,10 +75,12 @@ export async function postToFacebook(
     };
 
     const fetchResponse = await fetch(url, fetchOptions);
+    const responseBody = await fetchResponse.json();
 
     if (!fetchResponse.ok) {
-        throw new Error("Error posting to Facebook");
+        console.error("Facebook API Error:", responseBody);
+        throw new Error(`Facebook API Error: ${responseBody.error?.message}`);
     }
 
-    return fetchResponse.json();
+    return responseBody;
 }
