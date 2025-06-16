@@ -17,7 +17,7 @@ app.get("/", (c) => {
 
 app.post("/relay", async (c) => {
     try {
-        const ai = new GoogleGenAI({ apiKey: c.env.GEMINI_API_KEY });
+        // const ai = new GoogleGenAI({ apiKey: c.env.GEMINI_API_KEY });
 
         const update = await c.req.json();
 
@@ -31,24 +31,24 @@ app.post("/relay", async (c) => {
             return c.text("Invalid message format", 400);
         }
 
-        const getGeminiResponse = await ai.models.generateContent({
-            model: "gemini-2.0-flash",
-            contents: `You are a language-cleaning and localization assistant.
-        Given a short news message copied from a Telegram channel, follow these steps:
-        1. Detect and identify the country or countries mentioned (e.g., Russia, Ukraine, Israel, USA).
-        2. Add the corresponding flag emoji (🇷🇺, 🇺🇦, 🇮🇱, 🇺🇸, etc.) at the beginning of the final output.
-        3. Remove the name or link of the Telegram channel (if mentioned at the beginning or end).
-        4. Translate the message into fluent Bangla, using a tone similar to a news headline or update.
-        5. Preserve English abbreviations such as ATGM, UAV, IDF, etc.
-        6. Use commonly spoken and easy-to-understand Bangla words suitable for social media.
+        // const getGeminiResponse = await ai.models.generateContent({
+        //     model: "gemini-2.0-flash",
+        //     contents: `You are a language-cleaning and localization assistant.
+        // Given a short news message copied from a Telegram channel, follow these steps:
+        // 1. Detect and identify the country or countries mentioned (e.g., Russia, Ukraine, Israel, USA).
+        // 2. Add the corresponding flag emoji (🇷🇺, 🇺🇦, 🇮🇱, 🇺🇸, etc.) at the beginning of the final output.
+        // 3. Remove the name or link of the Telegram channel (if mentioned at the beginning or end).
+        // 4. Translate the message into fluent Bangla, using a tone similar to a news headline or update.
+        // 5. Preserve English abbreviations such as ATGM, UAV, IDF, etc.
+        // 6. Use commonly spoken and easy-to-understand Bangla words suitable for social media.
 
-        ✦ Output only the cleaned Bangla text with the flag emoji at the start. Nothing else.
+        // ✦ Output only the cleaned Bangla text with the flag emoji at the start. Nothing else.
         
-        Here is the message:
-        ${text}`,
-        });
+        // Here is the message:
+        // ${text}`,
+        // });
 
-        const translatedText = getGeminiResponse.text;
+        // const translatedText = getGeminiResponse.text;
 
         //echo the message back
         const response = {
@@ -56,7 +56,7 @@ app.post("/relay", async (c) => {
             text:
                 `Sender ID: ${from.id}\n` +
                 `From: ${from.first_name} ${from.last_name || ""}\n` +
-                `Message: ${translatedText}\n`,
+                `Message: ${text}\n`,
         };
         const url = `https://api.telegram.org/bot${c.env.TG_BOT_TOKEN}/sendMessage`;
         const fetchOptions = {
@@ -74,18 +74,18 @@ app.post("/relay", async (c) => {
 
         const result = await fetchResponse.json();
 
-        // @ts-expect-error Hono's fetch is not typed
-        const fbResponse = await fetch(
-            `https://graph.facebook.com/${PAGE_ID}/feed`,
-            {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    message: translatedText,
-                    access_token: c.env.FACEBOOK_PAGE_ACCESS_TOKEN,
-                }),
-            }
-        );
+        
+        // const fbResponse = await fetch(
+        //     `https://graph.facebook.com/${PAGE_ID}/feed`,
+        //     {
+        //         method: "POST",
+        //         headers: { "Content-Type": "application/json" },
+        //         body: JSON.stringify({
+        //             message: translatedText,
+        //             access_token: c.env.FACEBOOK_PAGE_ACCESS_TOKEN,
+        //         }),
+        //     }
+        // );
 
         // Return a success response
         if (!result.ok) {
