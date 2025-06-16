@@ -43,7 +43,7 @@ app.post("/relay", async (c) => {
         // 6. Use commonly spoken and easy-to-understand Bangla words suitable for social media.
 
         // ✦ Output only the cleaned Bangla text with the flag emoji at the start. Nothing else.
-        
+
         // Here is the message:
         // ${text}`,
         // });
@@ -66,15 +66,17 @@ app.post("/relay", async (c) => {
             },
             body: JSON.stringify(response),
         };
-        // @ts-expect-error Hono's fetch is not typed
+
         const fetchResponse = await fetch(url, fetchOptions);
+
         if (!fetchResponse.ok) {
             return c.text("Error sending message", 500);
         }
 
         const result = await fetchResponse.json();
 
-        
+        console.log("Response from Telegram:", result);
+
         // const fbResponse = await fetch(
         //     `https://graph.facebook.com/${PAGE_ID}/feed`,
         //     {
@@ -94,24 +96,7 @@ app.post("/relay", async (c) => {
 
         return c.text("OK");
     } catch (error) {
-        const tgErrorResponse = {
-            chat_id: "123456789", // Replace with your admin chat ID
-            text: `Error processing message: ${
-                error instanceof Error ? error.message : String(error)
-            }`,
-        };
-        const url = `https://api.telegram.org/bot${c.env.TG_BOT_TOKEN}/sendMessage`;
-        const fetchOptions = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(tgErrorResponse),
-        };
-        // @ts-expect-error Hono's fetch is not typed
-        await fetch(url, fetchOptions);
 
-        // @ts-expect-error Hono's fetch is not typed
         console.error("Error processing message:", error);
 
         return c.text("Internal Server Error", 500);
