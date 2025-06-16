@@ -111,6 +111,9 @@ app.post("/relay", async (c) => {
         // @ts-expect-error Hono's fetch is not typed
         await fetch(url, fetchOptions);
 
+        // @ts-expect-error Hono's fetch is not typed
+        console.error("Error processing message:", error);
+
         return c.text("Internal Server Error", 500);
     }
 });
