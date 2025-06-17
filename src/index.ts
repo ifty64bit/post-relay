@@ -30,13 +30,15 @@ app.post("/relay", async (c) => {
             update.message.photo && update.message.photo.length > 0;
         const hasVideo = update.message.video !== undefined;
 
-        if (!from || !text || (!caption && !hasPhotos && !hasVideo)) {
+        const originalMessage = text || caption;
+
+        if (!from || !originalMessage || (!hasPhotos && !hasVideo && !text)) {
             console.error("Invalid message format:", update);
             return c.text("Invalid message format", 400);
         }
 
         const translatedText = await translateText(
-            text || caption,
+            originalMessage,
             c.env.GEMINI_API_KEY
         );
 
