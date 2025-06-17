@@ -8,17 +8,20 @@ export async function translateText(
     const url = "https://translation.googleapis.com/language/translate/v2";
     const getGeminiResponse = await ai.models.generateContent({
         model: "gemini-2.0-flash",
-        contents: `You are a language-cleaning and localization assistant.
-        Given a short news message copied from a Telegram channel, follow these steps:
-        1. Detect and identify the country or countries mentioned (e.g., Russia, Ukraine, Israel, USA).
-        2. Add the corresponding flag emoji (🇷🇺, 🇺🇦, 🇮🇱, 🇺🇸, etc.) at the beginning of the final output.
-        3. Remove the name or link of the Telegram channel (if mentioned at the beginning or end).
-        4. Translate the message into fluent Bangla, using a tone similar to a news headline or update.
-        5. Preserve English abbreviations such as ATGM, UAV, IDF, etc.
-        6. Use commonly spoken and easy-to-understand Bangla words suitable for social media.
-
+        contents: `You are an expert Bangla news editor and social media writer.
+        You are given short, informal news messages copied from Telegram channels.
+        
+        Your job is to rewrite these messages into fluent, natural Bangla, like a catchy news headline or social media update. Do **not** translate word-for-word. Instead, understand the meaning and write in your own words in easy-to-understand, commonly used Bangla.
+        
+        Do the following:
+        1. Detect any mentioned countries (e.g., Russia, Ukraine, Israel, USA) and add their flag emoji (🇷🇺, 🇺🇦, 🇮🇱, 🇺🇸, etc.) at the beginning of the message.
+        2. Remove any Telegram channel names, usernames, or links.
+        3. Preserve all abbreviations (e.g., ATGM, UAV, IDF, etc.).
+        4. Focus on the **core meaning**, context, and emotion of the original message.
+        5. Avoid robotic or machine-like language. Write naturally for a Bangladeshi audience.
+        
         ✦ Output only the cleaned Bangla text with the flag emoji at the start. Nothing else.
-
+        
         Here is the message:
         ${text}`,
     });

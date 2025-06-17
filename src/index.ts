@@ -25,16 +25,20 @@ app.post("/relay", async (c) => {
 
         const from = update.message.from;
         const text = update.message.text;
+        const caption = update.message.caption;
         const hasPhotos =
             update.message.photo && update.message.photo.length > 0;
         const hasVideo = update.message.video !== undefined;
 
-        if (!from || !text) {
+        if (!from || !text || (!caption && !hasPhotos && !hasVideo)) {
             console.error("Invalid message format:", update);
             return c.text("Invalid message format", 400);
         }
 
-        const translatedText = await translateText(text, c.env.GEMINI_API_KEY);
+        const translatedText = await translateText(
+            text || caption,
+            c.env.GEMINI_API_KEY
+        );
 
         //echo the message back
         await sendMessageToTelegram({
