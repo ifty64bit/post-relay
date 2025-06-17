@@ -24,17 +24,22 @@ app.post("/relay", async (c) => {
         const update = await c.req.json();
 
         const from = update.message.from;
-        const text = update.message.text;
-        const caption = update.message.caption;
+        const text = update.message.text ?? null;
+        const caption = update.message.caption ?? null;
         const hasPhotos =
-            update.message.photo && update.message.photo.length > 0;
+            Array.isArray(update.message.photo) &&
+            update.message.photo.length > 0;
         const hasVideo = update.message.video !== undefined;
 
         const originalMessage = text || caption;
 
-        if (!from || !originalMessage || (!hasPhotos && !hasVideo && !text)) {
-            console.error("Invalid message format:", update);
-            return c.text("Invalid message format", 400);
+        // 💡 Ignore if: no text/caption AND it's only media (photo or video)
+        if (!from || (!originalMessage && (hasPhotos || hasVideo))) {
+            console.warn(
+                "Skipping media-only message:",
+                update.message.message_id
+            );
+            return c.text("Ignored media-only message", 200); // 200 to avoid retry
         }
 
         const translatedText = await translateText(
