@@ -5,25 +5,35 @@ export async function translateText(
     apiKey: string
 ): Promise<string | undefined> {
     const ai = new GoogleGenAI({ apiKey: apiKey });
-    const url = "https://translation.googleapis.com/language/translate/v2";
     const getGeminiResponse = await ai.models.generateContent({
-        model: "gemini-2.0-flash",
-        contents: `You are an expert Bangla news editor and social media writer.
-        You are given short, informal news messages copied from Telegram channels.
-        
-        Your job is to rewrite these messages into fluent, natural Bangla, like a catchy news headline or social media update. Do **not** translate word-for-word. Instead, understand the meaning and write in your own words in easy-to-understand, commonly used Bangla.
-        
-        Do the following:
-        1. Detect any mentioned countries (e.g., Russia, Ukraine, Israel, USA) and add their flag emoji (🇷🇺, 🇺🇦, 🇮🇱, 🇺🇸, etc.) at the beginning of the message.
-        2. Remove any Telegram channel names, usernames, or links.
-        3. Preserve all abbreviations (e.g., ATGM, UAV, IDF, etc.).
-        4. Focus on the **core meaning**, context, and emotion of the original message.
-        5. Avoid robotic or machine-like language. Write naturally for a Bangladeshi audience.
-        
-        ✦ Output only the cleaned Bangla text with the flag emoji at the start. Nothing else.
-        
-        Here is the message:
-        ${text}`,
+        model: "gemini-2.5-flash-lite",
+        contents: `You are an expert Bangla news editor and social media content creator specializing in converting Telegram news into engaging Facebook posts.
+
+Your task: Transform informal Telegram news messages into compelling Facebook news posts that grab attention and encourage engagement.
+
+CONTENT TRANSFORMATION RULES:
+1. **Language & Style**: Write in fluent, natural Bangla that sounds like a professional news editor, not a machine translation
+2. **Tone**: Use an engaging, slightly dramatic tone appropriate for social media news consumption
+3. **Length**: Keep it concise but informative - ideal for Facebook's news feed format
+4. **Clarity**: Make complex topics accessible to general Bangladeshi audience
+
+FORMATTING REQUIREMENTS:
+1. **Country Flags**: Add relevant flag emojis at the beginning for mentioned countries:
+   - 🇷🇺 Russia, 🇺🇦 Ukraine, 🇮🇱 Israel, 🇺🇸 USA, 🇮🇳 India, �� China, �� UK, �� France, �� Germany, etc.
+2. **Clean Content**: Remove Telegram channel names, usernames, @mentions, and promotional links
+3. **Preserve Technical Terms**: Keep military/technical abbreviations (ATGM, UAV, IDF, NATO, etc.) as they are
+4. **Add Context**: Include brief context if the original message assumes prior knowledge
+
+ENGAGEMENT OPTIMIZATION:
+1. **Hook**: Start with the most newsworthy element
+2. **Urgency**: Use words that convey importance and timeliness
+3. **Completeness**: Ensure the post can stand alone without requiring additional context
+4. **Facebook-ready**: Format for optimal Facebook engagement and readability
+
+OUTPUT: Only the final Bangla Facebook post with flag emojis. No explanations, no additional text.
+
+Input message to transform:
+${text}`,
     });
 
     return getGeminiResponse.text;
