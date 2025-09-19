@@ -6,7 +6,7 @@ export async function translateText(
 ): Promise<string | undefined> {
     const ai = new GoogleGenAI({ apiKey: apiKey });
     const getGeminiResponse = await ai.models.generateContent({
-        model: "gemini-2.5-flash-lite",
+        model: "gemini-2.5-flash",
         contents: `You are an expert Bangla news editor and social media content creator specializing in converting Telegram news into engaging Facebook posts.
 
 Your task: Transform informal Telegram news messages into compelling Facebook news posts that grab attention and encourage engagement.
